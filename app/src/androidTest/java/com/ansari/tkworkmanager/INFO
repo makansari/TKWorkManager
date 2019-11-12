@@ -1,0 +1,40 @@
+1. Add the dependency
+ def work_version = "1.0.0-beta02"
+    implementation "android.arch.work:work-runtime-ktx:$work_version"
+
+2. create a package worker and add a class First Worker and extend the
+
+class FirstWorker (ctx : Context, params : WorkerParameters) : Worker (ctx,params)
+
+and then implemnt the method
+
+3. Add a try catch block for do work method
+
+override fun doWork(): Result {
+
+        try {
+
+            return Result.success()
+        }catch (throwable : Throwable){
+
+            return  Result.failure()
+        }
+    }
+
+  4. make the thread of sleep  --- Thread.sleep(5000)
+
+  5. setup a button in main activity and on click of button create work manager
+
+   button.setOnClickListener(View.OnClickListener {
+
+              val workManager = WorkManager.getInstance()
+              var firstWorkReq= OneTimeWorkRequest.Builder(FirstWorker::class.java).build()
+              workManager.enqueue(firstWorkReq)
+          })
+
+   6. Also can set a observer
+
+    workManager.getWorkInfoByIdLiveData(firstWorkReq.id).observe(this, Observer {
+                    var workInfoStatus = it.state
+                   Toast.makeText(this, "status is " + workInfoStatus,Toast.LENGTH_SHORT).show()
+
